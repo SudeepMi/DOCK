@@ -12,6 +12,7 @@ const Editor = dynamic(
     () => import("react-draft-wysiwyg").then((module) => module.Editor),
     {
         ssr: false,
+        
     }
 );
 
