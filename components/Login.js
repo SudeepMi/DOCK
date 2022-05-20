@@ -16,24 +16,17 @@ const Login = () => {
                 width="550"
                 objectFit="contain"
             />
+            <h4>Login to manage your documents</h4>
             <Button
                 className="w-44 mt-10"
-                color="blue"
+                color="green"
                 buttonType="filled"
                 ripple="light"
                 onClick={signIn}
             >
                 Login
             </Button>
-            <Button
-                className="w-54 mt-3"
-                color="teal"
-                buttonType="filled"
-                ripple="light"
-                onClick={() => router.push(`/about`)}
-            >
-                About this Project
-            </Button>
+            
         </div>
     );
 }
