@@ -40,7 +40,7 @@ function TextEditor() {
 
     const onEditorStateChange = (editorState) => {
         setEditorState(editorState);
-
+        console.log(convertToRaw(editorState.getCurrentContent()))
         db.collection("userDocs")
         .doc( owner? owner : session.user.email)
             .collection("docs")
@@ -153,7 +153,6 @@ function TextEditor() {
               },
             },
             image: {
-             
               className: undefined,
               component: undefined,
               popupClassName: undefined,

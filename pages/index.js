@@ -107,9 +107,9 @@ export default function Home() {
 
             <section className="bg-[#F8F9FA] pb-10 px-10">
                 <div className="max-w-3xl mx-auto">
-                    <div className="flex items-center justify-between py-6">
-                        <h2 className="text-gray-700 text-lg">Start a new document</h2>
-                        <Button
+                    <div className="flex items-center justify-between">
+                        
+                        {/* <Button
                             color="gray"
                             buttonType="outline"
                             rounded={true}
@@ -117,13 +117,21 @@ export default function Home() {
                             className="border-0"
                         >
                             <Icon name="more_vert" size="3xl" />
-                        </Button>
+                        </Button> */}
                     </div>
                     <div>
-                        <div onClick={() => setShowModal(true)} className="relative h-52 w-40 border-2 cursor-pointer hover:border-blue-700">
-                            <Image src={add} layout="fill" />
+                        <div onClick={() => setShowModal(true)} className="relative w-100 py-6 cursor-pointer">
+                                                   <Button
+                            color="green"
+                            buttonType="contained"
+                            rounded={true}
+                            ripple="dark"
+                            className="border-0"
+                        >
+                            Create Blank Document
+                        </Button>
                         </div>
-                        <p className="ml-2 mt-2 font-semibold text-sm text-gray-700">Blank</p>
+                       
                     </div>
                 </div>
             </section>

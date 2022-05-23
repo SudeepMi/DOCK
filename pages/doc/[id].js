@@ -11,27 +11,21 @@ import ModalBody from '@material-tailwind/react/ModalBody'
 import ModalFooter from '@material-tailwind/react/ModalFooter'
 import { useState } from 'react';
 import firebase from 'firebase';
-
-
-
-
-
+import draftToHtml from 'draftjs-to-html';
+import { parse } from 'node-html-parser';
 
 const Doc = () => {
-
     const [session] = useSession();
     const [showModal, setShowModal] = useState(false);
     const [userShare, setUserShare] = useState('');
 
-
     if (!session)
         return <Login />
 
-
     const router = useRouter();
     const { id } = router.query;
-    const {owner} = router.query;
-    
+    const { owner } = router.query;
+
     const [snapshot, loadingSnapshot] = useDocumentOnce(
         db.collection("userDocs").doc(owner ? owner : session.user.email).collection("docs").doc(id)
     );
@@ -41,49 +35,48 @@ const Doc = () => {
     }
 
     const shareDocument = () => {
-        if (userShare){
+        if (userShare) {
             db
-            .collection("shareDocs")
-            .doc(userShare)
-            .collection("sharedDocs")
-            .add({
-                file_id: id,
-                owner: session.user.email,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
+                .collection("shareDocs")
+                .doc(userShare)
+                .collection("sharedDocs")
+                .add({
+                    file_id: id,
+                    owner: session.user.email,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
             setUserShare('');
             setShowModal(false);
             window.location.reload();
-        }else{
+        } else {
             alert("Please enter a valid email address");
         }
-           
     }
 
-    
-
+    const onExport = (downloadFileName) => {
+        const data = snapshot.data().editorState;
+        // const mdData = draftToHtml(data);
+        // const string = `<div>${mdData}</div>`
+        // const root = parse(string)
+    }
 
     return (
         <div>
             <header className="flex justify-between items-center p-3 pb-1">
                 <span onClick={() => router.push('/')} className="cursor-pointer">
-                    <Icon name="description" size="5xl" color="blue" />
+                    <Icon name="description" size="5xl" color="green" />
                 </span>
                 <div className="flex-grow px-2">
-                    <h2>{snapshot?.data()?.fileName}</h2>
+                    <h2>File Name: {snapshot?.data()?.fileName}</h2>
+                    <p className="pr-5 text-sm">{snapshot?.data()?.date?.toDate().toLocaleDateString()}</p>
                     <div className="flex items-center text-sm space-x-1 -ml-1 h-8 text-gray-500">
-                        <p className="option">File</p>
-                        <p className="option">Edit</p>
-                        <p className="option">View</p>
-                        <p className="option">Insert</p>
-                        <p className="option">Format</p>
-                        <p className="option">Tools</p>
+                        <button onClick={() => onExport("Test")}>export</button>
                     </div>
                 </div>
 
                 <div className="idRight hidden md:inline-flex items-center">
                     <Button
-                        color="lightBlue"
+                        color="green"
                         buttonType="filled"
                         size="regular"
                         className="hidden md:inline-flex h-10"
@@ -91,57 +84,57 @@ const Doc = () => {
                         block={false}
                         iconOnly={false}
                         rillple="light"
-                        onClick={()=>setShowModal(true)}
-                        >
-                        <Icon name="people" size="md"/> SHARE
+                        onClick={() => setShowModal(true)}
+                    >
+                        <Icon name="people" size="md" /> SHARE
                     </Button>
-                    <img 
+                    <img
                         onClick={signOut}
-                        className="cursor-pointer rounded-full h-10 w-10 ml-2" 
+                        className="cursor-pointer rounded-full h-10 w-10 ml-2"
                         src={session?.user.image}
-                        alt="" 
+                        alt=""
                     />
                 </div>
             </header>
-           
-           <Modal
+
+            <Modal
                 isOpen={showModal}
                 active={showModal}
                 toggler={() => setShowModal(false)}
                 className='mt-6 p-10 bg-white shadow-lg max-w-3xl mx-auto mb-12 border'
-           >
-            <ModalBody>
-            <input
-                value={userShare}
-                onChange={(e) => setUserShare(e.target.value)}
-                type="text"
-                className="outline-none w-full"
-                placeholder="Enter the user google email ..."
-                onKeyDown={(e) => e.key === "Enter" && shareDocument()}
-            />
-            </ModalBody>
-        <ModalFooter>
-            <Button
-                color="blue"
-                buttonType="link"
-                onClick={(e) => setShowModal(false)}
-                ripple="dark"
-               
             >
-                Cancel
-            </Button>
-            <Button
-                color="blue"
-                onClick={()=>shareDocument()}
-                ripple="light"
-            >
-                Share
-            </Button>
-        </ModalFooter>
+                <ModalBody>
+                    <input
+                        value={userShare}
+                        onChange={(e) => setUserShare(e.target.value)}
+                        type="text"
+                        className="outline-none w-full"
+                        placeholder="Enter the user google email ..."
+                        onKeyDown={(e) => e.key === "Enter" && shareDocument()}
+                    />
+                </ModalBody>
+                <ModalFooter>
+                    <Button
+                        color="blue"
+                        buttonType="link"
+                        onClick={(e) => setShowModal(false)}
+                        ripple="dark"
 
-           </Modal>
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        color="blue"
+                        onClick={() => shareDocument()}
+                        ripple="light"
+                    >
+                        Share
+                    </Button>
+                </ModalFooter>
+
+            </Modal>
             <TextEditor />
-           
+
 
         </div>
     );
