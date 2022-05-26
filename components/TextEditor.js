@@ -390,6 +390,24 @@ function TextEditor() {
         editorClassName="mt-6 p-10 bg-white shadow-lg max-w-5xl mx-auto mb-12 border"
         toolbar={toolBarOption}
         plugins={[imagePlugin]}
+        hashtag={{
+          separator: ' ',
+          trigger: '#',
+        }}
+        mention={{
+          separator: ' ',
+          trigger: '@',
+          suggestions: [
+            { text: 'APPLE', value: 'apple', url: 'apple' },
+            { text: 'BANANA', value: 'banana', url: 'banana' },
+            { text: 'CHERRY', value: 'cherry', url: 'cherry' },
+            { text: 'DURIAN', value: 'durian', url: 'durian' },
+            { text: 'EGGFRUIT', value: 'eggfruit', url: 'eggfruit' },
+            { text: 'FIG', value: 'fig', url: 'fig' },
+            { text: 'GRAPEFRUIT', value: 'grapefruit', url: 'grapefruit' },
+            { text: 'HONEYDEW', value: 'honeydew', url: 'honeydew' },
+          ],
+        }}
       />
     </div>
   );
