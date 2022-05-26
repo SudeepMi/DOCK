@@ -7,6 +7,9 @@ import { useRouter } from "next/dist/client/router";
 import { convertFromRaw, convertToRaw } from "draft-js";
 import { useSession } from "next-auth/client";
 import { useDocumentOnce } from "react-firebase-hooks/firestore";
+import draftToHtml from 'draftjs-to-html';
+import ReactToPrint from 'react-to-print';
+
 
 const Editor = dynamic(
     () => import("react-draft-wysiwyg").then((module) => module.Editor),
@@ -189,7 +192,32 @@ function TextEditor() {
                 toolbarClassName="flex sticky top-0 z-50 !justify-center mx-auto"
                 editorClassName="mt-6 p-10 bg-white shadow-lg max-w-5xl mx-auto mb-12 border"
                 toolbar={toolBarOption}
+                mention={{
+                  separator: ' ',
+                  trigger: '@',
+                  suggestions: [
+                    { text: 'APPLE', value: 'apple', url: 'apple' },
+                    { text: 'BANANA', value: 'banana', url: 'banana' },
+                    { text: 'CHERRY', value: 'cherry', url: 'cherry' },
+                    { text: 'DURIAN', value: 'durian', url: 'durian' },
+                    { text: 'EGGFRUIT', value: 'eggfruit', url: 'eggfruit' },
+                    { text: 'FIG', value: 'fig', url: 'fig' },
+                    { text: 'GRAPEFRUIT', value: 'grapefruit', url: 'grapefruit' },
+                    { text: 'HONEYDEW', value: 'honeydew', url: 'honeydew' },
+                  ],
+                }}
+                hashtag={{}}
             />
+
+      <textarea
+        readOnly
+        className="rdw-storybook-textarea"
+        value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
+      />
+       <ReactToPrint
+            content={() => draftToHtml(convertToRaw(editorState.getCurrentContent()))}
+            trigger={() => <button className="btn btn-primary">Print to PDF!</button>}
+          />
         </div>
     );
 }
