@@ -19,6 +19,7 @@ const Doc = () => {
   const [showModal, setShowModal] = useState(false);
   const [userShare, setUserShare] = useState("");
   const [loading, setLoading] = useState("");
+  const [locale, setLocale] = useState('en')
 
   if (!session) return <Login />;
 
@@ -55,37 +56,45 @@ const Doc = () => {
 
   const onExport = (downloadFileName) => {
     setLoading(true);
-    const data = snapshot.data().editorState;
-    const mdData = draftToHtml(data);
-    const string = `<div>${mdData}</div>`;
+    const snapshot = db
+    .collection("userDocs")
+    .doc(owner ? owner : session.user.email)
+    .collection("docs")
+    .doc(id).get().then((__data)=>{
 
-    fetch("http://localhost:3001/get", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        string,
-      }),
+      const data = __data.data().editorState;
+      const mdData = draftToHtml(data);
+      const string = `<div>${mdData}</div>`;
+      window.print(string);
+  
+      fetch("http://localhost:3001/get", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          string,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.file);
+          fetch(`http://localhost:3001/?file_name=${data.file}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/pdf",
+            },
+          })
+            .then((res) => res.blob())
+            .then((blob) => {
+              var blob = new Blob([blob], { type: "application/pdf" });
+              const fileURL = URL.createObjectURL(blob);
+              setLoading(false);
+              window.open(fileURL);
+  
+            });
+        });
     })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data.file);
-        fetch(`http://localhost:3001/?file_name=${data.file}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/pdf",
-          },
-        })
-          .then((res) => res.blob())
-          .then((blob) => {
-            var blob = new Blob([blob], { type: "application/pdf" });
-            const fileURL = URL.createObjectURL(blob);
-            setLoading(false);
-            window.open(fileURL);
-
-          });
-      });
   };
 
   const [saving, setSaving] = useState(false);
@@ -106,6 +115,18 @@ const Doc = () => {
           </p>
           <div className="flex items-center text-sm space-x-1 -ml-1 h-8 text-gray-500">
             <button onClick={() => onExport("Test")} className="bg-green-500 hover:bg-blue-700 text-white font-bold px-4 rounded-full">export</button>
+            <select onChange={(e)=>setLocale(e.target.value)}>
+              <option value={'en'}>Locale</option>
+              <option value={'en'}>en</option>
+              <option value={'fr'}>fr</option>
+              <option value={'zh'}>zh</option>
+              <option value={'ru'}>ru</option>
+              <option value={'pt'}>pt</option>
+              <option value={'ko'}>ko</option>
+              <option value={'it'}>it</option>
+              <option value={'nl'}>nl</option>
+            </select>
+
           </div>
         </div>
 
@@ -123,11 +144,11 @@ const Doc = () => {
           >
             <Icon name="people" size="md" /> SHARE
           </Button>
-          {/* <img
+          <img
             className="cursor-pointer rounded-full h-10 w-10 ml-2"
             src={session?.user.image}
             alt=""
-          /> */}
+          />
         </div>
         <button onClick={signOut} className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
   Logout
@@ -164,7 +185,7 @@ const Doc = () => {
           </Button>
         </ModalFooter>
       </Modal>
-      <TextEditor setSaving={setSaving}  />
+      <TextEditor setSaving={setSaving} locale={locale}  />
       </>
   }
     </div>

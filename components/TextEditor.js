@@ -8,6 +8,8 @@ import { convertFromRaw, convertToRaw } from "draft-js";
 import { useSession } from "next-auth/client";
 import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import createImagePlugin from "@draft-js-plugins/image";
+import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+
 
 const imagePlugin = createImagePlugin();
 
@@ -18,7 +20,7 @@ const Editor = dynamic(
   }
 );
 
-function TextEditor({ setSaving }) {
+function TextEditor({ setSaving, locale }) {
   const [session] = useSession();
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [uploadedImages, setUploadedImages] = useState([])
@@ -46,7 +48,6 @@ function TextEditor({ setSaving }) {
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
     setSaving(true);
-    // console.log(convertToRaw(editorState.getCurrentContent()));
     db.collection("userDocs")
       .doc(owner ? owner : session.user.email)
       .collection("docs")
@@ -115,12 +116,12 @@ function TextEditor({ setSaving }) {
       inDropdown: true,
       options: [
         "Normal",
-        "H1",
-        "H2",
-        "H3",
-        "H4",
-        "H5",
-        "H6",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
         "Blockquote",
         "Code",
       ],
@@ -381,11 +382,13 @@ function TextEditor({ setSaving }) {
       //   undo: { icon: 'undo', className: undefined },
       //   redo: { icon: 'redo', className: undefined },
     },
+    
   };
 
   return (
     <div className="bg-[#F8F9FA] min-h-screen pb-16">
       <Editor
+      
         editorState={editorState}
         onEditorStateChange={onEditorStateChange}
         toolbarClassName="flex sticky top-0 z-50 !justify-center mx-auto"
@@ -409,6 +412,9 @@ function TextEditor({ setSaving }) {
             { text: 'GRAPEFRUIT', value: 'grapefruit', url: 'grapefruit' },
             { text: 'HONEYDEW', value: 'honeydew', url: 'honeydew' },
           ],
+        }}
+        localization={{
+          locale: locale,
         }}
       />
     </div>
