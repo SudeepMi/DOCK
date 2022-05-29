@@ -17,6 +17,7 @@ const Doc = () => {
   const [session] = useSession();
   const [showModal, setShowModal] = useState(false);
   const [userShare, setUserShare] = useState("");
+  const [loading, setLoading] = useState("");
 
   if (!session) return <Login />;
 
@@ -52,6 +53,7 @@ const Doc = () => {
   };
 
   const onExport = (downloadFileName) => {
+    setLoading(true);
     const data = snapshot.data().editorState;
     const mdData = draftToHtml(data);
     const string = `<div>${mdData}</div>`;
@@ -78,13 +80,16 @@ const Doc = () => {
           .then((blob) => {
             var blob = new Blob([blob], { type: "application/pdf" });
             const fileURL = URL.createObjectURL(blob);
+            setLoading(false);
             window.open(fileURL);
+
           });
       });
   };
 
   return (
     <div>
+      { loading ? "Loading...." : <>
       <header className="flex justify-between items-center p-3 pb-1">
         <span onClick={() => router.push("/")} className="cursor-pointer">
           <Icon name="description" size="5xl" color="green" />
@@ -95,7 +100,7 @@ const Doc = () => {
             {snapshot?.data()?.date?.toDate().toLocaleDateString()}
           </p>
           <div className="flex items-center text-sm space-x-1 -ml-1 h-8 text-gray-500">
-            <button onClick={() => onExport("Test")}>export</button>
+            <button onClick={() => onExport("Test")} className="bg-green-500 hover:bg-blue-700 text-white font-bold px-4 rounded-full">export</button>
           </div>
         </div>
 
@@ -113,13 +118,15 @@ const Doc = () => {
           >
             <Icon name="people" size="md" /> SHARE
           </Button>
-          <img
-            onClick={signOut}
+          {/* <img
             className="cursor-pointer rounded-full h-10 w-10 ml-2"
             src={session?.user.image}
             alt=""
-          />
+          /> */}
         </div>
+        <button onClick={signOut} class="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+  Logout
+</button>
       </header>
 
       <Modal
@@ -153,6 +160,8 @@ const Doc = () => {
         </ModalFooter>
       </Modal>
       <TextEditor />
+      </>
+  }
     </div>
   );
 };

@@ -9,7 +9,7 @@ function Header() {
     return (
         <div className="sticky top-0 z-50 flex items-center px-4 py-2 shadow-md bg-white">
             <div id="pdfElement" style={{position: "absolute", top: -100}}></div>
-            <Button
+            {/* <Button
                 color="gray"
                 buttonType="outline"
                 rounded={true}
@@ -18,7 +18,7 @@ function Header() {
                 className="hidden md:inline-flex h-20 w-20 border-0"
             >
                 <Icon name="menu" size="3xl" />
-            </Button>
+            </Button> */}
             
             <h1 className="inline-flex ml-2 mr-2 text-gray-700 text-2xl">Dock</h1>
             <div className="w-5 md:w-auto ml-2 flex flex-grow items-center pl-2 text-gray-600 rounded-lg focus-within:text-gray-600 focus-within:shadow-md">
@@ -35,13 +35,16 @@ function Header() {
                 <Icon name="apps" size="3xl" color="gray" />
             </Button> */}
             <img
-                onClick={signOut}
+                
                 loading="lazy"
                 className="cursor-pointer h-12 w-12 rounded-full ml-5"
                 src={session?.user?.image}
                 alt="image"
             />
-            <button>Export</button>
+            <button onClick={signOut} class="mx-2 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+  Logout
+</button>
+
         </div>
     );
 }
