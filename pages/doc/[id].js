@@ -12,6 +12,7 @@ import ModalFooter from "@material-tailwind/react/ModalFooter";
 import { useState } from "react";
 import firebase from "firebase";
 import draftToHtml from "draftjs-to-html";
+// import Timestamp from "firebase.timestamp";
 
 const Doc = () => {
   const [session] = useSession();
@@ -87,6 +88,8 @@ const Doc = () => {
       });
   };
 
+  const [saving, setSaving] = useState(false);
+
   return (
     <div>
       { loading ? "Loading...." : <>
@@ -97,7 +100,9 @@ const Doc = () => {
         <div className="flex-grow px-2">
           <h2>File Name: {snapshot?.data()?.fileName}</h2>
           <p className="pr-5 text-sm">
-            {snapshot?.data()?.date?.toDate().toLocaleDateString()}
+            {/* { console.log() } */}
+           created on: {new Date(snapshot?.data()?.timestamp?.seconds * 1000).toLocaleDateString("en-US")}
+           {saving ? <span className="mx-2">saving.....</span> : null}
           </p>
           <div className="flex items-center text-sm space-x-1 -ml-1 h-8 text-gray-500">
             <button onClick={() => onExport("Test")} className="bg-green-500 hover:bg-blue-700 text-white font-bold px-4 rounded-full">export</button>
@@ -124,7 +129,7 @@ const Doc = () => {
             alt=""
           /> */}
         </div>
-        <button onClick={signOut} class="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+        <button onClick={signOut} className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
   Logout
 </button>
       </header>
@@ -159,7 +164,7 @@ const Doc = () => {
           </Button>
         </ModalFooter>
       </Modal>
-      <TextEditor />
+      <TextEditor setSaving={setSaving}  />
       </>
   }
     </div>

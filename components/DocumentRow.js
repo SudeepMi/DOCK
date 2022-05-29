@@ -1,13 +1,18 @@
 import Button from "@material-tailwind/react/Button";
 import Icon from "@material-tailwind/react/Icon";
 import { useRouter } from "next/dist/client/router";
+import {db} from "../firebase";
+import { useSession } from "next-auth/client";
 
 const DocumentRow = ({ id, fileName, date }) => {
 
     const router = useRouter()
+  const [session] = useSession();
+
 
     const deleteDoc = () => {
-        
+        db.collection("userDocs").doc(session.user.email).collection("docs").doc(id).delete()
+        router.replace("/")
     }
 
     return (
@@ -22,7 +27,7 @@ const DocumentRow = ({ id, fileName, date }) => {
                 iconOnly={true}
                 ripple="dark"
                 className="border-0"
-                onClick={()=>alert("delete click")}
+                onClick={()=>deleteDoc()}
             >
                 <Icon name="delete" size="2xl" />
             </Button>

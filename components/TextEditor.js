@@ -18,14 +18,13 @@ const Editor = dynamic(
   }
 );
 
-function TextEditor() {
+function TextEditor({ setSaving }) {
   const [session] = useSession();
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [uploadedImages, setUploadedImages] = useState([])
   const router = useRouter();
   const { id } = router.query;
   const { owner } = router.query;
-
   const [snapshot] = useDocumentOnce(
     db
       .collection("userDocs")
@@ -46,7 +45,8 @@ function TextEditor() {
 
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
-    console.log(convertToRaw(editorState.getCurrentContent()));
+    setSaving(true);
+    // console.log(convertToRaw(editorState.getCurrentContent()));
     db.collection("userDocs")
       .doc(owner ? owner : session.user.email)
       .collection("docs")
@@ -58,7 +58,9 @@ function TextEditor() {
         {
           merge: true,
         }
-      );
+      ).then(() => {
+        setSaving(false);
+      });
   };
 
   const insertImage = (file) => {

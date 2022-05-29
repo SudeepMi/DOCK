@@ -15,10 +15,12 @@ import firebase from 'firebase';
 import { useCollectionOnce } from 'react-firebase-hooks/firestore'
 import DocumentRow from '../components/DocumentRow';
 import SharedDocumentRow from '../components/SharedDocumentRow';
+import { useRouter } from 'next/dist/client/router';
 
 export default function Home() {
 
     const [session] = useSession();
+    const router = useRouter();
 
     if (!session)
         return <Login />
@@ -44,17 +46,21 @@ export default function Home() {
         if (!input)
             return;
 
-        db.collection("userDocs")
+       db.collection("userDocs")
             .doc(session.user.email)
             .collection("docs")
             .add({
                 fileName: input,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            }).then((_data) => {
+                setInput('');
+                setShowModal(false);
+                _data.get().then((_data) => {
+                    router.replace(`/doc/${_data.id}`);
+                });
+            })
 
-        setInput('');
-        setShowModal(false);
-        window.location.reload();
+        // window.location.reload();
     };
 
     const modal = (
@@ -155,6 +161,7 @@ export default function Home() {
                         shared?.docs.map(doc => (
                             <SharedDocumentRow
                                 key={doc.id}
+                                id={doc.id}
                                 fileId={doc.data().file_id}
                                 dateShared={doc.data().timestamp}
                                 owner={doc.data().owner}

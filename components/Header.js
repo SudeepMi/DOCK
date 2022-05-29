@@ -41,7 +41,7 @@ function Header() {
                 src={session?.user?.image}
                 alt="image"
             />
-            <button onClick={signOut} class="mx-2 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+            <button onClick={signOut} className="mx-2 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
   Logout
 </button>
 
