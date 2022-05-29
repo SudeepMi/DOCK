@@ -10,7 +10,7 @@ export default NextAuth({
       clientId: "295081910176-lr8l8bb5t8tdesrjmhm948f6336b4i6q.apps.googleusercontent.com",
       clientSecret: "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",
       requestTokenUrl: "https://accounts.google.com/o/oauth2/auth",
-      redirect_uri:'https://dock-eight.vercel.app/api/auth/google/callback',
+      redirect_uri:'https://dockapp.vercel.app/api/auth/google/callback',
     }),
     // ...add more providers here
   ],
