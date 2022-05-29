@@ -3,14 +3,17 @@ import Icon from "@material-tailwind/react/Icon";
 import { useRouter } from "next/dist/client/router";
 import {db} from "../firebase";
 import { useSession } from "next-auth/client";
+import React from "react";
 
-const DocumentRow = ({ id, fileName, date }) => {
+const DocumentRow = ({ id, fileName, date, setloading, setDeleted }) => {
 
     const router = useRouter()
   const [session] = useSession();
 
 
+
     const deleteDoc = () => {
+        setloading(true);
         db.collection("userDocs").doc(session.user.email).collection("docs").doc(id).delete()
         window.location.reload();
     }
