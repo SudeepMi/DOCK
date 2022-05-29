@@ -5,5 +5,8 @@ module.exports = (phase, { defaultConfig }) => {
     // images: {
     //     loader: 'imgix',
     //   }
+    // exportpathmap
+    // exportTrailingSlash
+    // exportPathMap
 }
 }

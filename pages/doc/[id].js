@@ -59,7 +59,7 @@ const Doc = () => {
     const mdData = draftToHtml(data);
     const string = `<div>${mdData}</div>`;
 
-    fetch("http://localhost:3001/get", {
+    fetch("https://dockapp.herokuapp.com/get", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +71,7 @@ const Doc = () => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data.file);
-        fetch(`http://localhost:3001/?file_name=${data.file}`, {
+        fetch(`https://dockapp.herokuapp.com/?file_name=${data.file}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/pdf",
