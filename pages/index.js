@@ -17,6 +17,7 @@ import DocumentRow from '../components/DocumentRow';
 import SharedDocumentRow from '../components/SharedDocumentRow';
 import { useRouter } from 'next/dist/client/router';
 import React from 'react';
+import { ContentState, convertFromHTML, convertToRaw, EditorState } from 'draft-js';
 
 export default function Home() {
 
@@ -31,6 +32,7 @@ export default function Home() {
 
     const [showModal, setShowModal] = useState(false);
     const [input, setInput] = useState('');
+    const [showModalUpload, setShowModalUpload] = useState(false);
     const [snapshot] = useCollectionOnce(
         db.collection("userDocs")
             .doc(session.user.email)
@@ -65,6 +67,57 @@ export default function Home() {
 
         // window.location.reload();
     };
+    const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const onUpload = (e) => {
+        // setLoading(true);
+        const file = e.target.files[0];
+        const fileName = file.name;
+        const fomrdat = new FormData();
+        fomrdat.append("file", file);
+        fomrdat.append("fileName", fileName);
+        fetch("http://localhost:3001/upload/single", {
+          method: "POST",
+        //   headers: {
+        //     "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+        //   },
+          body: fomrdat,
+        })
+          .then((res) => res.json())
+            .then((data) => {
+              
+              
+                    const sampleMarkup = `<div>${data.html}</div>`;
+                  console.log(sampleMarkup);
+                  const blocksFromHTML = convertFromHTML(sampleMarkup);
+                  const state = ContentState.createFromBlockArray(
+                    blocksFromHTML.contentBlocks,
+                    blocksFromHTML.entityMap,
+                  );
+                    setEditorState(EditorState.createWithContent(state));
+                    
+
+                setShowModalUpload(false);
+            db.collection("userDocs")
+            .doc(session.user.email)
+            .collection("docs")
+            .add({
+                fileName: data.filename,
+                editorState: convertToRaw(EditorState.createWithContent(state).getCurrentContent()),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then((_data) => {
+               
+                _data.get().then((_data) => {
+                    console.log(_data);
+                    router.replace(`/doc/${_data.id}`);
+                });
+            })
+
+                // window.location.reload();
+            })
+       
+        
+    };
+
 
     const modal = (
         <Modal
@@ -102,6 +155,39 @@ export default function Home() {
         </Modal>
     )
 
+    const upload_modal = (
+        <Modal
+            size="sm"
+            active={showModalUpload}
+            toggler={() => setShowModalUpload(false)}
+        >
+            <ModalBody>
+                {/* //file upload */}
+                <input
+                    type="file"
+                    onChange={onUpload}
+                />
+            </ModalBody>
+            <ModalFooter>
+                <Button
+                    color="blue"
+                    buttonType="link"
+                    onClick={(e) => setShowModalUpload(false)}
+                    ripple="dark"
+                >
+                    Cancel
+                </Button>
+                {/* <Button
+                    color="blue"
+                    onClick={createDocument}
+                    ripple="light"
+                >
+                    Create
+                </Button> */}
+            </ModalFooter>
+        </Modal>
+    )
+
 
     return (
         <div>
@@ -113,6 +199,7 @@ export default function Home() {
             <Header />
 
             {modal}
+            {upload_modal}
 
             <section className="bg-[#F8F9FA] pb-10 px-10">
                 <div className="max-w-3xl mx-auto">
@@ -130,7 +217,7 @@ export default function Home() {
                     </div>
                     <div>
                         <div onClick={() => setShowModal(true)} className="relative w-100 py-6 cursor-pointer">
-                                                   <Button
+                        <Button
                             color="green"
                             buttonType="contained"
                             rounded={true}
@@ -138,6 +225,17 @@ export default function Home() {
                             className="border-0"
                         >
                             Create Blank Document
+                        </Button>
+                        </div>
+                        <div onClick={() => setShowModalUpload(true)} className="relative w-100 py-6 cursor-pointer">
+                        <Button
+                            color="green"
+                            buttonType="contained"
+                            rounded={true}
+                            ripple="dark"
+                            className="border-0"
+                        >
+                            Upload Document
                         </Button>
                         </div>
                        
