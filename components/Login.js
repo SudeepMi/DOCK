@@ -26,6 +26,9 @@ const Login = () => {
             >
                 Login
             </Button>
+            <a href="/about" className="btn btn-block mt-5">
+                ABOUT THIS PROJECT
+            </a>
             
         </div>
     );

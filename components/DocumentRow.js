@@ -6,6 +6,10 @@ const DocumentRow = ({ id, fileName, date }) => {
 
     const router = useRouter()
 
+    const deleteDoc = () => {
+        
+    }
+
     return (
         <div onClick={() => router.push(`/doc/${id}`)} className="flex items-center p-4 rounded-lg hover:bg-gray-100 text-gray-700 text-sm cursor-pointer">
             <Icon name="article" size="3xl" color="blue" />
@@ -18,8 +22,9 @@ const DocumentRow = ({ id, fileName, date }) => {
                 iconOnly={true}
                 ripple="dark"
                 className="border-0"
+                onClick={()=>alert("delete click")}
             >
-                <Icon name="more_vert" size="3xl" />
+                <Icon name="delete" size="2xl" />
             </Button>
         </div>
     );
