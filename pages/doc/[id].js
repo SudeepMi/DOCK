@@ -90,6 +90,7 @@ const Doc = () => {
   };
 
   const [saving, setSaving] = useState(false);
+  const [logoutShown, setLogoutShown] = useState(false);
 
   return (
     <div>
@@ -144,15 +145,27 @@ const Doc = () => {
           >
             <Icon name="people" size="md" /> SHARE
           </Button>
+         
           <img
             className="cursor-pointer rounded-full h-10 w-10 ml-2"
             src={session?.user.image}
             alt=""
+            onClick={() => setLogoutShown(!logoutShown)}
           />
+          <div className="hidden md:inline-flex items-center" style={{
+            display:`${logoutShown?"block":"none"}`, 
+            position: "absolute",
+            right: 0,
+            top: "80px",
+            background: '#bcbcbc',
+            padding: '23px',
+            zIndex: '999'}}>
+           <button onClick={signOut}  className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full d-none">
+              Logout
+            </button>
+          </div>
         </div>
-        <button onClick={signOut} className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
-  Logout
-</button>
+       
       </header>
 
       <Modal

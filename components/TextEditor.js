@@ -8,10 +8,14 @@ import { convertFromRaw, convertToRaw, convertFromHTML, ContentState } from "dra
 import { useSession } from "next-auth/client";
 import { useDocumentOnce } from "react-firebase-hooks/firestore";
 import createImagePlugin from "@draft-js-plugins/image";
-import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import createCounterPlugin from '@draft-js-plugins/counter';
 
 
 const imagePlugin = createImagePlugin();
+const counterPlugin = createCounterPlugin();
+const  {CharCounter} = counterPlugin;
+
 
 const Editor = dynamic(
   () => import("react-draft-wysiwyg").then((module) => module.Editor),
@@ -350,11 +354,23 @@ function TextEditor({ setSaving, locale }) {
       className: undefined,
       component: undefined,
       popupClassName: undefined,
-      embedCallback: undefined,
       defaultSize: {
         height: "auto",
         width: "auto",
       },
+    },
+    table:{
+      className: undefined,
+      component: undefined,
+      popupClassName: undefined,
+      defaultCols: 4,
+      defaultRows: 4,
+      minCols: 2,
+      maxCols: 20,
+      minRows: 2,
+      maxRows: 20,
+      cols: undefined,
+      rows: undefined,
     },
     image: {
       className: undefined,
@@ -387,14 +403,14 @@ function TextEditor({ setSaving, locale }) {
 
   return (
     <div className="bg-[#F8F9FA] min-h-screen pb-16">
-      <Editor
       
+      <Editor
         editorState={editorState}
         onEditorStateChange={onEditorStateChange}
         toolbarClassName="flex sticky top-0 z-50 !justify-center mx-auto"
         editorClassName="mt-6 p-10 bg-white shadow-lg max-w-5xl mx-auto mb-12 border"
         toolbar={toolBarOption}
-        plugins={[imagePlugin]}
+        plugins={[imagePlugin, tablePlugin]}
         hashtag={{
           separator: ' ',
           trigger: '#',
@@ -417,6 +433,8 @@ function TextEditor({ setSaving, locale }) {
           locale: locale,
         }}
       />
+
+      
     </div>
   );
 }
