@@ -69,13 +69,13 @@ export default function Home() {
     };
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const onUpload = (e) => {
-        // setLoading(true);
+        setLoading(true);
         const file = e.target.files[0];
         const fileName = file.name;
         const fomrdat = new FormData();
         fomrdat.append("file", file);
         fomrdat.append("fileName", fileName);
-        fetch("http://localhost:3001/upload/single", {
+        fetch("https://dockapp.herokuapp.com/upload/single", {
           method: "POST",
         //   headers: {
         //     "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
@@ -108,6 +108,7 @@ export default function Home() {
                
                 _data.get().then((_data) => {
                     console.log(_data);
+                    setLoading(false);
                     router.replace(`/doc/${_data.id}`);
                 });
             })
@@ -117,6 +118,24 @@ export default function Home() {
        
         
     };
+
+    const [loading, setLoading] = React.useState(false);
+
+    const laoding = (
+        <Modal
+        size={'sm'}
+        show={loading}
+        toggler={() => setLoading(false)}
+        >
+            <ModalBody>
+                <div className="flex justify-center">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </ModalBody>
+        </Modal>
+    )
 
 
     const modal = (
@@ -200,6 +219,7 @@ export default function Home() {
 
             {modal}
             {upload_modal}
+            {laoding}
 
             <section className="bg-[#F8F9FA] pb-10 px-10">
                 <div className="max-w-3xl mx-auto">
