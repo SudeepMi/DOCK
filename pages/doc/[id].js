@@ -123,6 +123,14 @@ const Doc = () => {
         </div>
 
         <div className="idRight hidden md:inline-flex items-center">
+        <a
+            className="link mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+            href="https://zoom.us/join"
+            target={"_blank"}
+            
+          >
+          JOIN ZOOM
+          </a>
           <Button
             color="green"
             buttonType="filled"

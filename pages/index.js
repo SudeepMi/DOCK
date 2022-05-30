@@ -75,7 +75,7 @@ export default function Home() {
         const fomrdat = new FormData();
         fomrdat.append("file", file);
         fomrdat.append("fileName", fileName);
-        fetch("http://localhost:3001/upload/single", {
+        fetch("https://dockapp.herokuapp.com/upload/single", {
           method: "POST",
         //   headers: {
         //     "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
