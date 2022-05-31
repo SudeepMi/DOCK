@@ -39,8 +39,8 @@ const About = () => {
                             </li>
 
                             <li>
-                                <a href='https://smallseotools.com/online-text-editor/'>
-                                    3. SMALL SEO TOOLS
+                                <a href='https://anytexteditor.com/online-notepad'>
+                                    3. Any Text Editor
                                 </a>
                             </li>
 

@@ -119,6 +119,8 @@ const Doc = () => {
               <option value={'it'}>it</option>
               <option value={'nl'}>nl</option>
             </select>
+            <button onClick={() => onExport("Test")} className="bg-red-500 hover:bg-blue-700 text-white font-bold px-4 rounded-full">Full Screen</button>
+
 
           </div>
         </div>
@@ -198,7 +200,9 @@ const Doc = () => {
           </Button>
         </ModalFooter>
       </Modal>
-      <TextEditor setSaving={setSaving} locale={locale}  />
+      <div  id="editor__" style={{overflow:"scroll"}}>
+          <TextEditor setSaving={setSaving} locale={locale}  />
+      </div>
       </>
   }
     </div>

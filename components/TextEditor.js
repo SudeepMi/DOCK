@@ -13,7 +13,9 @@ import createCounterPlugin from '@draft-js-plugins/counter';
 
 
 const imagePlugin = createImagePlugin();
-const counterPlugin = createCounterPlugin();
+const counterPlugin = createCounterPlugin({
+
+});
 const  {CharCounter} = counterPlugin;
 
 
@@ -28,6 +30,7 @@ function TextEditor({ setSaving, locale }) {
   const [session] = useSession();
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [uploadedImages, setUploadedImages] = useState([])
+  const [full_screen, setFS] = useState(false);
   const router = useRouter();
   const { id } = router.query;
   const { owner } = router.query;
@@ -401,16 +404,38 @@ function TextEditor({ setSaving, locale }) {
     
   };
 
+  const fullScreen = () =>{
+    
+    const el = document.querySelector("#editor__")
+    if(full_screen){
+      el.requestFullscreen({
+        navigationUI:"hide"
+      });
+      el.scrollIntoView()
+    }else{
+      if(document.fullscreenElement){
+
+        document.exitFullscreen()
+      }
+      // exitFullscreen()
+    }
+  }
+
+  useEffect(()=>{
+    fullScreen();
+  },[full_screen])
+
   return (
     <div className="bg-[#F8F9FA] min-h-screen pb-16">
       
       <Editor
+      
         editorState={editorState}
         onEditorStateChange={onEditorStateChange}
         toolbarClassName="flex sticky top-0 z-50 !justify-center mx-auto"
         editorClassName="mt-6 p-10 bg-white shadow-lg max-w-5xl mx-auto mb-12 border"
         toolbar={toolBarOption}
-        plugins={[imagePlugin, tablePlugin]}
+        plugins={[imagePlugin,counterPlugin]}
         hashtag={{
           separator: ' ',
           trigger: '#',
@@ -432,11 +457,19 @@ function TextEditor({ setSaving, locale }) {
         localization={{
           locale: locale,
         }}
+        toolbarCustomButtons={[<button className="hover:bg-blue-200 text-black font-bold px-2 rounded" onClick={()=>setFS(!full_screen)}>
+          <i className="material-icons">&#xe5d0;</i>
+        </button>]}
+         spellCheck={true}
       />
 
-      
+      <CharCounter
+        limit={300}
+        editorState={EditorState.create()}
+      />
     </div>
   );
 }
+
 
 export default TextEditor;
