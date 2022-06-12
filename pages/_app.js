@@ -12,6 +12,8 @@ function MyApp({ Component, pageProps }) {
                     href="https://fonts.googleapis.com/icon?family=Material+Icons"
                     rel="stylesheet"
                 />
+                <link rel="manifest" href="/manifest.json" />
+                <meta name="theme-color" content="#90cdf4" />
             </Head>
             <Provider session={pageProps.session}>
                 <Component {...pageProps} />
